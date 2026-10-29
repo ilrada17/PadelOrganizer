@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Padel Organizer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
+<style>
+:root{--bg:#EDF2F7;--surface:#fff;--ink:#0F2240;--mute:#5B6B82;--court:#1D55A8;--court-d:#143F82;--ball:#D3E636;--line:#D5DEEA;--bad:#C8412F;--on-court:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1626;--surface:#13233B;--ink:#EAF0F8;--mute:#9AABC4;--court:#2F6FCC;--court-d:#1B4B93;--line:#243651;--bad:#F0715F}}
+:root[data-theme="dark"]{--bg:#0B1626;--surface:#13233B;--ink:#EAF0F8;--mute:#9AABC4;--court:#2F6FCC;--court-d:#1B4B93;--line:#243651;--bad:#F0715F}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:2rem;font-weight:800;letter-spacing:-.02em;margin:0 0 4px;line-height:1.1}
+.sub{color:var(--mute);margin:0 0 18px}
+.ball{display:inline-block;width:.7em;height:.7em;border-radius:50%;background:var(--ball);margin-right:.35em;box-shadow:inset -2px -2px 0 rgba(0,0,0,.15)}
+nav{display:flex;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:5px;margin-bottom:18px}
+nav button{flex:1;border:0;background:none;color:var(--mute);font:inherit;font-weight:600;padding:10px 6px;border-radius:10px;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--court);color:#fff}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--ball);outline-offset:2px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:16px}
+.panel h2{font-size:1.1rem;margin:0 0 12px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+label{display:flex;flex-direction:column;gap:4px;font-size:.85rem;color:var(--mute);flex:1 1 130px}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;min-height:44px;width:100%}
+.btn{font:inherit;font-weight:700;border:0;border-radius:10px;padding:10px 16px;min-height:44px;background:var(--court);color:#fff;cursor:pointer}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+.btn.accent{background:var(--ball);color:#10230a}
+.btn.danger{background:none;color:var(--bad);border:1px solid var(--line)}
+.btn.small{min-height:36px;padding:6px 12px;font-size:.9rem}
+.match{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:16px}
+.mhead{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:10px}
+.mhead strong{font-size:1.1rem;text-transform:capitalize}
+.mhead span{color:var(--mute);font-size:.9rem;display:block}
+.tag{font-size:.8rem;font-weight:700;border-radius:99px;padding:3px 10px;background:var(--bg);color:var(--mute);white-space:nowrap}
+.tag.ok{background:var(--ball);color:#10230a}
+.court{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px 44px;padding:14px;background:var(--court);border-radius:12px;border:3px solid var(--court-d);min-height:190px;color:var(--on-court)}
+.court::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:0;border-left:4px dashed rgba(255,255,255,.85);transform:translateX(-50%)}
+.court::after{content:"";position:absolute;left:14px;right:14px;top:50%;border-top:2px solid rgba(255,255,255,.28)}
+.tm{position:absolute;top:-1px;font-size:.72rem;font-weight:700;background:var(--court-d);padding:1px 8px;border-radius:0 0 8px 8px;z-index:2}
+.tm.a{left:12px}.tm.b{right:12px}
+.slot{position:relative;z-index:1;border:0;font:inherit;border-radius:10px;min-height:54px;padding:6px 8px;cursor:pointer;background:#fff;color:#0F2240;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;line-height:1.2}
+.slot small{color:#5B6B82}
+.slot.empty{background:transparent;border:2px dashed rgba(255,255,255,.7);color:#fff}
+.slot.win{box-shadow:0 0 0 3px var(--ball)}
+.mfoot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.score{display:flex;align-items:center;gap:6px}
+.score input{width:56px;text-align:center;padding:6px}
+.spacer{flex:1}
+.hist{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.hist>div{background:var(--bg);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:2px}
+.hist>div span{font-size:.8rem;color:var(--mute)}
+.hist>div.w{box-shadow:inset 0 0 0 2px var(--ball)}
+.sets{display:flex;flex-direction:column;gap:6px;width:100%}
+.setrow{display:flex;align-items:center;gap:8px}
+.setrow>span:first-child{width:104px;font-size:.9rem}
+.sets input{width:56px;text-align:center;padding:6px}
+.sets .btn{align-self:flex-start;margin-top:4px}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:10px 6px;border-bottom:1px solid var(--line)}
+th{font-size:.8rem;color:var(--mute);font-weight:600}
+td.n,th.n{text-align:right}
+.pl{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid var(--line)}
+.pl:last-child{border-bottom:0}
+.lv{color:var(--mute);font-size:.9rem}
+.empty-msg{color:var(--mute);text-align:center;padding:22px 8px}
+.modal{position:fixed;inset:0;background:rgba(5,12,25,.6);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+.sheet{background:var(--surface);width:100%;max-width:520px;border-radius:18px 18px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));max-height:75vh;overflow:auto}
+.sheet h3{margin:0 0 10px}
+.opt{display:flex;justify-content:space-between;width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:8px;min-height:44px;cursor:pointer}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-weight:600;z-index:60}
+a.btn{text-decoration:none;display:inline-flex;align-items:center}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.err{color:var(--bad);font-size:.9rem;min-height:1.3em;margin:0 0 8px}
+@media (prefers-reduced-motion:no-preference){.slot,.btn{transition:transform .12s}.slot:active,.btn:active{transform:scale(.97)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><div><h1><span class="ball"></span>Padel Organizer</h1>
+  <p class="sub">Crea le partite, riempi i posti in campo e tieni la classifica.</p></div><div id="auth"></div></div>
+  <nav role="tablist" id="tabs"></nav>
+  <main id="view"></main>
+</div>
+<div id="overlay"></div>
+<div id="toast"></div>
+<script>
+const KEY='padel-organizer-v1';
+const LEVELS=['Principiante','Base','Intermedio','Avanzato','Esperto'];
+let S=load(), tab='partite', picker=null, tt, admin=isAdmin(), login=false, confirmBox=null;
+
+function uid(){return Math.random().toString(36).slice(2,9)}
+function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function seed(){
+  const names=[['Marco',3],['Giulia',4],['Luca',2],['Sara',3],['Andrea',5],['Chiara',2]];
+  const players=names.map(([name,level])=>({id:uid(),name,level}));
+  const d=new Date();d.setDate(d.getDate()+2);
+  return {players,matches:[{id:uid(),date:ymd(d),time:'19:30',place:'Padel Club Centrale · Campo 2',slots:[players[0].id,players[1].id,players[2].id,null],score:null}]};
+}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.players&&o.matches)return o}}catch(e){}return seed()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const P=id=>S.players.find(p=>p.id===id);
+function toast(t){const el=document.getElementById('toast');el.innerHTML='<div class="toast">'+esc(t)+'</div>';clearTimeout(tt);tt=setTimeout(()=>el.innerHTML='',2200)}
+function fmt(m){const d=new Date(m.date+'T'+(m.time||'00:00'));return isNaN(d)?m.date:d.toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'})+' · '+m.time}
+
+function balance(m){
+  const ids=m.slots, L=ids.map(i=>P(i).level);
+  const opts=[[0,1,2,3],[0,2,1,3],[0,3,1,2]];
+  let best=null,diff=99;
+  opts.forEach(o=>{const d=Math.abs(L[o[0]]+L[o[1]]-L[o[2]]-L[o[3]]);if(d<diff){diff=d;best=o}});
+  m.slots=best.map(i=>ids[i]);
+  return diff;
+}
+
+function render(){
+  const tabs=[['partite','Partite'],['giocatori','Giocatori'],['storico','Storico']];
+  document.getElementById('tabs').innerHTML=tabs.map(([k,l])=>`<button role="tab" aria-selected="${tab===k}" data-a="tab" data-v="${k}">${l}</button>`).join('');
+  document.getElementById('view').innerHTML=tab==='partite'?viewMatches():tab==='giocatori'?viewPlayers():viewHistory();
+  document.getElementById('auth').innerHTML=admin?'<button class="btn ghost small" data-a="logout">Esci (admin)</button>':'<button class="btn ghost small" data-a="openLogin">Accesso admin</button>';
+  document.getElementById('overlay').innerHTML=confirmBox?viewConfirm():login?viewLogin():picker?viewPicker():'';
+  if(login){const i=document.getElementById('l-user');if(i)i.focus()}
+}
+
+function viewMatches(){
+  const d=new Date();d.setDate(d.getDate()+1);
+  const form=`<section class="panel"><h2>Nuova partita</h2><div class="row">
+    <label>Data<input type="date" id="m-date" value="${ymd(d)}"></label>
+    <label>Ora<input type="time" id="m-time" value="19:00"></label>
+    <label style="flex:2 1 200px">Circolo e campo<input id="m-place" placeholder="Es. Padel Club · Campo 1"></label>
+    <button class="btn accent" data-a="addMatch">Crea partita</button></div></section>`;
+  const ms=S.matches.filter(m=>!m.score).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  if(!ms.length)return form+'<p class="empty-msg">Nessuna partita in programma. Creane una con il modulo qui sopra.</p>';
+  return form+ms.map(matchCard).join('');
+}
+
+function matchCard(m){
+  const free=m.slots.filter(x=>!x).length, full=free===0;
+  const sc=m.score, wa=sc&&sc.a>sc.b, wb=sc&&sc.b>sc.a;
+  const order=[0,2,1,3];
+  const slot=i=>{const p=P(m.slots[i]);
+    const win=(i<2&&wa)||(i>=2&&wb);
+    return p?`<button class="slot${win?' win':''}" data-a="pick" data-m="${m.id}" data-s="${i}" aria-label="${esc(p.name)}, cambia giocatore"><b>${esc(p.name)}</b><small>${LEVELS[p.level-1]}</small></button>`
+      :`<button class="slot empty" data-a="pick" data-m="${m.id}" data-s="${i}" aria-label="Posto libero, aggiungi giocatore">+ Libero</button>`};
+  const txt=`Partita di padel: ${fmt(m)}${m.place?' @ '+m.place:''}. ${free?'Posti liberi: '+free+'.':'Siamo al completo!'}`;
+  const sv=(k,j)=>sc&&sc.sets&&sc.sets[k]?sc.sets[k][j]:'';
+  const scoreUI=full?`<div class="sets" aria-label="Risultato dei set"><small class="lv">Giochi vinti in ogni set: squadra A – squadra B</small>${[0,1,2].map(k=>`<div class="setrow"><span>Set ${k+1}${k==2?' <small>(se 1–1)</small>':''}</span><input type="number" inputmode="numeric" min="0" max="9" id="s${k}a-${m.id}" value="${sv(k,0)}" aria-label="Set ${k+1}, giochi squadra A"><span>–</span><input type="number" inputmode="numeric" min="0" max="9" id="s${k}b-${m.id}" value="${sv(k,1)}" aria-label="Set ${k+1}, giochi squadra B"></div>`).join('')}<button class="btn small" data-a="score" data-m="${m.id}">Salva risultato</button></div>`:'';
+  return `<article class="match"><div class="mhead"><div><strong>${esc(fmt(m))}</strong><span>${esc(m.place||'Campo da definire')}</span></div>
+    <span class="tag ${full?'ok':''}">${sc?'Giocata '+sc.a+'–'+sc.b:full?'Completa':free+(free===1?' posto libero':' posti liberi')}</span></div>
+    <div class="court"><span class="tm a">Squadra A</span><span class="tm b">Squadra B</span>${order.map(slot).join('')}</div>
+    <div class="mfoot">${scoreUI}<span class="spacer"></span>
+      ${full&&!sc?`<button class="btn ghost small" data-a="balance" data-m="${m.id}">Bilancia squadre</button>`:''}
+      ${sc?'':`<a class="btn ghost small" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(txt)}">Invita</a>`}
+      <button class="btn danger small" data-a="delMatch" data-m="${m.id}">Elimina</button></div></article>`;
+}
+
+function viewPlayers(){
+  const add=!admin?'<p class="lv" style="margin:0 0 12px">Solo l’amministratore può aggiungere giocatori e modificarne il livello.</p>':`<section class="panel"><h2>Aggiungi giocatore</h2><div class="row">
+    <label style="flex:2 1 160px">Nome<input id="p-name" placeholder="Nome" maxlength="24"></label>
+    <label>Livello<select id="p-level">${LEVELS.map((l,i)=>`<option value="${i+1}" ${i==2?'selected':''}>${l}</option>`).join('')}</select></label>
+    <button class="btn" data-a="addPlayer">Aggiungi</button></div></section>`;
+  const list=S.players.length?S.players.map(p=>`<div class="pl"><div><b>${esc(p.name)}</b> ${admin?'':'<span class="lv">'+LEVELS[p.level-1]+'</span>'}</div>${admin?'<div class="row" style="flex-wrap:nowrap;gap:6px"><select data-a="setLevel" data-p="'+p.id+'" aria-label="Livello di '+esc(p.name)+'" style="width:auto">'+LEVELS.map((l,i)=>'<option value="'+(i+1)+'"'+(p.level===i+1?' selected':'')+'>'+l+'</option>').join('')+'</select><button class="btn danger small" data-a="delPlayer" data-p="'+p.id+'">Rimuovi</button></div>':''}</div>`).join(''):'<p class="empty-msg">Nessun giocatore. Aggiungine uno per iniziare.</p>';
+  return add+`<section class="panel"><h2>Giocatori (${S.players.length})</h2>${list}</section>${admin?'<button class="btn ghost small" data-a="reset">Ripristina dati di esempio</button>':''}`;
+}
+
+function stats(){
+  const st={};S.players.forEach(p=>st[p.id]={p,g:0,w:0});
+  S.matches.forEach(m=>{if(!m.score)return;m.slots.forEach((id,i)=>{if(!st[id])return;st[id].g++;if((i<2&&m.score.a>m.score.b)||(i>=2&&m.score.b>m.score.a))st[id].w++})});
+  return Object.values(st).sort((a,b)=>b.w-a.w||(b.g?b.w/b.g:0)-(a.g?a.w/a.g:0)||b.g-a.g);
+}
+function viewRank(){
+  const r=stats();
+  if(!r.some(x=>x.g))return '<p class="empty-msg">La classifica compare dopo la prima partita con risultato. Completa i 4 posti e salva il punteggio.</p>';
+  return `<section class="panel"><h2>Classifica</h2><table><thead><tr><th>Giocatore</th><th class="n">Giocate</th><th class="n">Vinte</th><th class="n">% vittorie</th></tr></thead><tbody>${r.map(x=>`<tr><td><b>${esc(x.p.name)}</b></td><td class="n">${x.g}</td><td class="n">${x.w}</td><td class="n">${x.g?Math.round(x.w/x.g*100)+'%':'–'}</td></tr>`).join('')}</tbody></table></section>`;
+}
+
+function viewHistory(){
+  const ms=S.matches.filter(m=>m.score).sort((a,b)=>(b.date+b.time).localeCompare(a.date+a.time));
+  if(!ms.length)return '<p class="empty-msg">Nessuna partita giocata. Quando salvi il risultato di una partita, la trovi qui.</p>';
+  if(admin)return '<p class="lv" style="margin:0 0 12px">Da amministratore puoi cambiare giocatori e set, oppure eliminare la partita.</p>'+ms.map(matchCard).join('');
+  return ms.map(m=>{
+    const n=i=>{const p=P(m.slots[i]);return p?esc(p.name):'?'};
+    const wa=m.score.a>m.score.b;
+    const sets=m.score.sets?m.score.sets.map(s=>s[0]+'–'+s[1]).join('   '):'';
+    return `<article class="match"><div class="mhead"><div><strong>${esc(fmt(m))}</strong><span>${esc(m.place||'Campo non indicato')}</span></div><span class="tag ok">${m.score.a}–${m.score.b}</span></div>
+    <div class="hist"><div class="${wa?'w':''}"><span>Squadra A${wa?' (vincitori)':''}</span><b>${n(0)} &amp; ${n(1)}</b></div><div class="${wa?'':'w'}"><span>Squadra B${wa?'':' (vincitori)'}</span><b>${n(2)} &amp; ${n(3)}</b></div></div>${sets?`<p class="lv" style="margin:8px 0 0">Set: ${sets}</p>`:''}</article>`}).join('');
+}
+
+function viewConfirm(){const r=confirmBox.type==='reset';return `<div class="modal" data-a="confirmNo"><div class="sheet" role="alertdialog" aria-modal="true" aria-label="Conferma"><h3>${r?'Ripristinare i dati di esempio?':'Eliminare questa partita?'}</h3><p class="lv">${r?'Giocatori e partite attuali verranno sostituiti.':'L’operazione non si può annullare.'}</p><div class="row"><button class="btn danger" data-a="confirmYes">${r?'Ripristina':'Elimina'}</button><button class="btn ghost" data-a="confirmNo">Annulla</button></div></div></div>`}
+
+function viewPicker(){
+  const m=S.matches.find(x=>x.id===picker.m); if(!m)return '';
+  const avail=S.players.filter(p=>!m.slots.includes(p.id));
+  const cur=m.slots[picker.s];
+  return `<div class="modal" data-a="close"><div class="sheet" role="dialog" aria-modal="true" aria-label="Scegli giocatore"><h3>Scegli il giocatore (squadra ${picker.s<2?'A':'B'})</h3>
+    ${avail.map(p=>`<button class="opt" data-a="assign" data-p="${p.id}"><b>${esc(p.name)}</b><span class="lv">${LEVELS[p.level-1]}</span></button>`).join('')||'<p class="empty-msg">Tutti i giocatori sono già in questa partita. Aggiungine altri dalla scheda Giocatori.</p>'}
+    ${cur&&!m.score?'<button class="opt" data-a="clearSlot" style="color:var(--bad)">Libera questo posto</button>':''}
+    <button class="btn ghost" data-a="close" style="width:100%">Chiudi</button></div></div>`;
+}
+
+const AUTH_HASH='c9eb3dfbf5c1b26684102e2c1a029c5a5e0ce6efc1bade8bd2b2f858dcaf8614';
+async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function isAdmin(){try{return sessionStorage.getItem('padel-admin')==='1'}catch(e){return false}}
+function viewLogin(){return `<div class="modal" data-a="closeLogin"><div class="sheet" role="dialog" aria-modal="true" aria-label="Accesso amministratore"><h3>Accesso amministratore</h3>
+  <label style="margin-bottom:10px">Utente<input id="l-user" autocomplete="username" autocapitalize="none"></label>
+  <label style="margin-bottom:10px">Password<input id="l-pass" type="password" autocomplete="current-password"></label>
+  <p class="err" id="l-err" role="alert"></p>
+  <div class="row"><button class="btn" data-a="doLogin">Accedi</button><button class="btn ghost" data-a="closeLogin">Annulla</button></div></div></div>`}
+async function doLogin(){
+  const u=document.getElementById('l-user').value.trim().toLowerCase(),p=document.getElementById('l-pass').value,err=document.getElementById('l-err');
+  try{if(await sha(u+':'+p)===AUTH_HASH){admin=true;login=false;try{sessionStorage.setItem('padel-admin','1')}catch(e){}render();toast('Accesso effettuato');return}}
+  catch(e){err.textContent='Accesso non disponibile in questo browser.';return}
+  err.textContent='Utente o password non corretti.';
+}
+document.addEventListener('change',e=>{const t=e.target;if(t.dataset&&t.dataset.a==='setLevel'&&admin){const p=P(t.dataset.p);if(p){p.level=+t.value;save();toast('Livello di '+p.name+': '+LEVELS[p.level-1]);render()}}});
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-a]'); if(!t)return;
+  if(t.classList.contains('modal')&&e.target!==t)return;
+  if(t.dataset.a==='setLevel')return;
+  if(t.dataset.a==='doLogin'){doLogin();return}
+  if(!admin&&['addPlayer','delPlayer','reset'].includes(t.dataset.a)){toast('Solo l’amministratore può farlo');return}
+  const a=t.dataset.a, m=S.matches.find(x=>x.id===t.dataset.m);
+  if(a==='tab'){tab=t.dataset.v}
+  else if(a==='openLogin'){login=true}
+  else if(a==='confirmNo'){confirmBox=null}
+  else if(a==='confirmYes'){const c=confirmBox;confirmBox=null;if(c.type==='delMatch'){S.matches=S.matches.filter(x=>x.id!==c.m);toast('Partita eliminata')}else if(c.type==='reset'){S=seed();toast('Dati di esempio ripristinati')}save()}
+  else if(a==='closeLogin'){login=false}
+  else if(a==='logout'){admin=false;try{sessionStorage.removeItem('padel-admin')}catch(e){}toast('Disconnesso')}
+  else if(a==='addMatch'){
+    const date=document.getElementById('m-date').value,time=document.getElementById('m-time').value,place=document.getElementById('m-place').value.trim();
+    if(!date||!time){toast('Inserisci data e ora');return}
+    S.matches.push({id:uid(),date,time,place,slots:[null,null,null,null],score:null});save();toast('Partita creata')}
+  else if(a==='pick'){picker={m:t.dataset.m,s:+t.dataset.s}}
+  else if(a==='close'){picker=null}
+  else if(a==='assign'){const mm=S.matches.find(x=>x.id===picker.m);mm.slots[picker.s]=t.dataset.p;picker=null;save()}
+  else if(a==='clearSlot'){const mm=S.matches.find(x=>x.id===picker.m);mm.slots[picker.s]=null;mm.score=null;picker=null;save()}
+  else if(a==='balance'){const d=balance(m);save();toast(d===0?'Squadre perfettamente bilanciate':'Squadre bilanciate (differenza livello: '+d+')')}
+  else if(a==='score'){
+    const sets=[];let wa=0,wb=0,err='';
+    for(let k=0;k<3;k++){const p=document.getElementById('s'+k+'a-'+m.id).value,q=document.getElementById('s'+k+'b-'+m.id).value;
+      if(p===''&&q==='')continue;
+      if(p===''||q===''){err='Completa entrambi i punteggi del set '+(k+1);break}
+      if(+p===+q){err='Il set '+(k+1)+' non può finire in pareggio';break}
+      if(sets.length<k){err='Compila i set in ordine';break}
+      if(wa===2||wb===2){err='La partita è già decisa: lascia vuoto il set '+(k+1);break}
+      sets.push([+p,+q]);if(+p>+q)wa++;else wb++}
+    if(!err&&wa<2&&wb<2)err=sets.length<2?'Inserisci almeno i primi due set':'Dopo l’1–1 serve il terzo set';
+    if(err){toast(err);return}
+    m.score={a:wa,b:wb,sets};save();toast('Risultato salvato')}
+  else if(a==='delMatch'){if(m.score&&!admin){toast('Solo l’amministratore può eliminare partite giocate');return}confirmBox={type:'delMatch',m:m.id}}
+  else if(a==='addPlayer'){
+    const n=document.getElementById('p-name').value.trim();
+    if(!n){toast('Inserisci un nome');return}
+    S.players.push({id:uid(),name:n,level:+document.getElementById('p-level').value});save();toast(n+' aggiunto')}
+  else if(a==='delPlayer'){const id=t.dataset.p;if(S.matches.some(mm=>mm.score&&mm.slots.includes(id))){toast('Questo giocatore è nello storico: sostituiscilo lì prima di rimuoverlo');return}S.players=S.players.filter(p=>p.id!==id);S.matches.forEach(mm=>{if(mm.slots.includes(id)){mm.slots=mm.slots.map(s=>s===id?null:s);mm.score=null}});save()}
+  else if(a==='reset'){confirmBox={type:'reset'}}
+  render();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&(picker||login||confirmBox)){picker=null;login=false;confirmBox=null;render()}
+  if(e.key==='Enter'&&(e.target.id==='l-user'||e.target.id==='l-pass')){doLogin()}
+  if(e.key==='Enter'&&e.target.id==='p-name'){document.querySelector('[data-a="addPlayer"]').click()}
+});
+render();
+</script>
+</body>
+</html>
